@@ -1096,7 +1096,7 @@ namespace lgfx
  #endif
 #else
       auto mod = getPeriphModule(i2c_port);
-      periph_module_disable(mod);
+      periph_module_enable(mod);
 #endif
 
       i2c_context[i2c_port].initialized = true;
