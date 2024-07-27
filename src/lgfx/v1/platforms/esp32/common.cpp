@@ -796,6 +796,7 @@ namespace lgfx
           if (fifo_reg == &reg[i]) { continue; }
           reg[i] = _reg_store[i];
         }
+        updateDev(dev);
       }
 
       void setPins(i2c_dev_t* dev, gpio_num_t scl, gpio_num_t sda)
