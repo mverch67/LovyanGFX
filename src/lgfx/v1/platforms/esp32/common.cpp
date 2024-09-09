@@ -671,17 +671,15 @@ namespace lgfx
  #define I2C_ACK_ERR_INT_RAW_M I2C_NACK_INT_RAW_M
 #endif
 
-#if __has_include(<soc/i2c_periph.h>)
+    __attribute__ ((unused))
     static periph_module_t getPeriphModule(int num)
     {
-      return i2c_periph_signal[num].module;
-    }
+#if SOC_I2C_NUM == 1 || defined CONFIG_IDF_TARGET_ESP32C6
+      return PERIPH_I2C0_MODULE;
 #else
-    static periph_module_t getPeriphModule(int num)
-    {
       return num == 0 ? PERIPH_I2C0_MODULE : PERIPH_I2C1_MODULE;
-    }
 #endif
+    }
 
     static i2c_dev_t* getDev(int num)
     {
