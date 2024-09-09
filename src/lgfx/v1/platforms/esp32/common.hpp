@@ -106,6 +106,13 @@ namespace lgfx
     pinMode(pin, mode);
   }
 
+#if defined(USE_ARDUINO_HAL_GPIO)
+  static inline void gpio_hi(uint32_t pin) { digitalWrite(pin, HIGH); }
+  static inline void gpio_lo(uint32_t pin) { digitalWrite(pin, LOW); }
+  static inline bool gpio_in(uint32_t pin) { return digitalRead(pin); }
+  static inline volatile uint32_t* get_gpio_hi_reg(int_fast8_t pin) { return (pin & 32) ? &GPIO.out1_w1ts.val : &GPIO.out_w1ts; }
+  static inline volatile uint32_t* get_gpio_lo_reg(int_fast8_t pin) { return (pin & 32) ? &GPIO.out1_w1tc.val : &GPIO.out_w1tc; }
+#else
 #if defined ( CONFIG_IDF_TARGET_ESP32C3 ) || defined ( CONFIG_IDF_TARGET_ESP32C6 )
   static inline volatile uint32_t* get_gpio_hi_reg(int_fast8_t pin) { return &GPIO.out_w1ts.val; }
   static inline volatile uint32_t* get_gpio_lo_reg(int_fast8_t pin) { return &GPIO.out_w1tc.val; }
@@ -119,6 +126,7 @@ namespace lgfx
 #endif
   static inline void gpio_hi(int_fast8_t pin) { if (pin >= 0) *get_gpio_hi_reg(pin) = 1 << (pin & 31); } // ESP_LOGI("LGFX", "gpio_hi: %d", pin); }
   static inline void gpio_lo(int_fast8_t pin) { if (pin >= 0) *get_gpio_lo_reg(pin) = 1 << (pin & 31); } // ESP_LOGI("LGFX", "gpio_lo: %d", pin); }
+#endif
 
   uint32_t getApbFrequency(void);
   uint32_t FreqToClockDiv(uint32_t fapb, uint32_t hz);
